@@ -21,9 +21,9 @@ void setup() {
   IrReceiver.begin(7);
   myservo.write(0);
   lcd.setCursor(0, 0);
-  lcd.print("Minutes until");
+  lcd.print("Minutes until      ");
   lcd.setCursor(0, 1);
-  lcd.print("shutdown? ");
+  lcd.print("shutdown?          ");
 }
 
 void loop() {
@@ -35,9 +35,10 @@ void loop() {
     // STARTUP mode:
     if (mode == 0) {
       lcd.setCursor(0, 0);
-      lcd.print("Minutes until");
+      lcd.print("Minutes until       ");
       lcd.setCursor(0, 1);
-      lcd.print("shutdown? ");
+      lcd.print("shutdown?           ");
+      lcd.setCursor(11,1);
       // Check for a number:
       if (key == 22 or key == 12 or key == 24 or key == 94 or key == 8 or
           key == 28 or key == 90 or key == 66 or key == 82 or key == 74) {
@@ -106,18 +107,24 @@ void loop() {
   if (mode == 2) {
     if (millis() > shutoff_time) {
       myservo.write(180);
-      lcd.setCursor(0,0);
-      lcd.print("Oven shut down    ");
-      lcd.setCursor(0, 1);
-      lcd.print(((millis() - shutoff_time) / 1000));
-      lcd.print(" s ago              ");
+      delay(1000);
+      myservo.write(0);
+      mode = 3;
     }
     else {
-      lcd.setCursor(0,0);
+      lcd.setCursor(0, 0);
       lcd.print("Shutting down in");
       lcd.setCursor(0, 1);
       lcd.print(((shutoff_time - millis()) / 1000));
       lcd.print(" s                   ");
     }
+  }
+
+  if (mode == 3) {
+    lcd.setCursor(0, 0);
+    lcd.print("Oven shut down    ");
+    lcd.setCursor(0, 1);
+    lcd.print(((millis() - shutoff_time) / 1000));
+    lcd.print(" s ago              ");
   }
 }
