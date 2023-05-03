@@ -14,6 +14,18 @@ unsigned long shutoff_time = 0;
 //  1:  Inputting the wait time
 //  2:  Running, weaiting for turnoff
 
+String prettytime(unsigned long seconds, String end) {
+  if(seconds < 60) {
+    return String(seconds) + " s" + end + "          ";
+  }
+  else if (seconds < 60*60) {
+    return String(seconds/60) + " m " + String(seconds%60) + " s" + end + "           ";
+  }
+  else {
+    return String(seconds/(60*60)) + " h " + String(seconds/60%60) + " m " + String(seconds%60) + " s" + end + "           ";
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2);
@@ -98,7 +110,6 @@ void loop() {
       }
     }
 
-
     Serial.println(cmd);
     delay(200);
     IrReceiver.resume();
@@ -115,8 +126,7 @@ void loop() {
       lcd.setCursor(0, 0);
       lcd.print("Shutting down in");
       lcd.setCursor(0, 1);
-      lcd.print(((shutoff_time - millis()) / 1000));
-      lcd.print(" s                   ");
+      lcd.print(prettytime((shutoff_time - millis()) / 1000, ""));
     }
   }
 
@@ -124,7 +134,6 @@ void loop() {
     lcd.setCursor(0, 0);
     lcd.print("Oven shut down    ");
     lcd.setCursor(0, 1);
-    lcd.print(((millis() - shutoff_time) / 1000));
-    lcd.print(" s ago              ");
+    lcd.print(prettytime((millis() - shutoff_time) / 1000, " ago" ));
   }
 }
