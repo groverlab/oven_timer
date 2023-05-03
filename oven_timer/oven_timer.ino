@@ -1,10 +1,13 @@
+// oven_timer.ino turns off the lab oven after a specified amount of time.
+// (c) 2023 by William H. Grover  |  wgrover@engr.ucr.edu  |  https://groverlab.org
+
 #include <LiquidCrystal.h>
 #include <Servo.h>
 #include <IRremote.h>
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 Servo myservo;
-int key;
+int key = 0;
 int mode = 0;
 String cmd;
 unsigned long shutoff_time = 0;
@@ -13,6 +16,7 @@ unsigned long shutoff_time = 0;
 //  0:  Startup; waiting for input
 //  1:  Inputting the wait time
 //  2:  Running, weaiting for turnoff
+//  3:  All done, showing time since turnoff
 
 String prettytime(unsigned long seconds, String end) {
   if(seconds < 60) {
@@ -115,6 +119,7 @@ void loop() {
     IrReceiver.resume();
   }
 
+  // RUNNING MODE
   if (mode == 2) {
     if (millis() > shutoff_time) {
       myservo.write(180);
@@ -130,6 +135,7 @@ void loop() {
     }
   }
 
+  // ALL DONE MODE
   if (mode == 3) {
     lcd.setCursor(0, 0);
     lcd.print("Oven shut down    ");
