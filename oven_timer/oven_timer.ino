@@ -4,6 +4,15 @@
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 Servo myservo;
+int key;
+int mode = 0;
+String cmd;
+unsigned long shutoff_time = 0;
+
+// MODES:
+//  0:  Startup; waiting for input
+//  1:  Inputting the wait time
+//  2:  Running; waiting for turnoff
 
 void setup() {
   Serial.begin(9600);
@@ -18,8 +27,39 @@ void loop() {
   lcd.setCursor(0, 1);
   lcd.print(millis() / 1000);
   if (IrReceiver.decode()) {
+    key = IrReceiver.decodedIRData.command;
+    Serial.println(key);
+
+    // STARTUP mode:
+    if (mode == 0) {
+      // Check for a number:
+      if (key==22 or key==12 or key==24 or key==94 or key==8 or
+          key==28 or key==90 or key==66 or key==82 or key==74) {
+        mode = 1;
+      }
+    }
+
+    // INPUTTING mode:
+    if (mode == 1) {
+      if (key==22) { cmd = cmd + "0"; }
+      if (key==12) { cmd = cmd + "1"; }
+      if (key==24) { cmd = cmd + "2"; }
+      if (key==94) { cmd = cmd + "3"; }
+      if (key== 8) { cmd = cmd + "4"; }
+      if (key==28) { cmd = cmd + "5"; }
+      if (key==90) { cmd = cmd + "6"; }
+      if (key==66) { cmd = cmd + "7"; }
+      if (key==82) { cmd = cmd + "8"; }
+      if (key==74) { cmd = cmd + "9"; }
+      if (key==71) {
+        shutoff_time = cmd.toInt();
+        Serial.println("Shutoff at " + String(shutoff_time));
+        mode = 2;
+      }
+    }
+    Serial.println(cmd);
+    delay(200);
     IrReceiver.resume();
-    Serial.println(IrReceiver.decodedIRData.command);
   }
   //  myservo.write(0);
   //  delay(1000);
