@@ -122,9 +122,9 @@ void loop() {
   // RUNNING MODE
   if (mode == 2) {
     if (millis() > shutoff_time) {
-      myservo.write(180);
+      myservo.write(30);  // turn off the oven
       delay(1000);
-      myservo.write(0);
+      myservo.write(0);  // reset the servo
       mode = 3;
     }
     else {
