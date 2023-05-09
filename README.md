@@ -1,4 +1,4 @@
 # oven_timer
-Timer for Grover Lab oven
+Automatically turns off the lab oven after a user-specified amount of time.
 
 ![Oven timer in use](oven.png)
